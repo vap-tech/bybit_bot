@@ -63,7 +63,7 @@ def get_tickers():
 
 old_price = float(get_tickers()['result']['list'][0]['lastPrice'])
 
-percent = 0.5
+percent = 1
 
 difference = old_price / 100 * percent
 
