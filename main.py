@@ -64,12 +64,12 @@ def get_tickers():
 old_price = float(get_tickers()['result']['list'][0]['lastPrice'])
 
 percent = 0.5
-i = 6 * 60 * 24
 
-while i:
+difference = old_price / 100 * percent
+
+while 1:
+
     time.sleep(10)
-
-    difference = old_price / 100 * percent
 
     new_price = float(get_tickers()['result']['list'][0]['lastPrice'])
     if new_price > old_price:
@@ -87,9 +87,3 @@ while i:
             print(datetime.now().strftime("%H:%M:%S"), end=' ')
             print(buy())
             continue
-
-    i -= 1
-
-
-print()
-print('завершено корректно')
