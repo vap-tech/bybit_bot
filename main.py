@@ -17,10 +17,10 @@ def buy():
     try:
         response = session.place_order(
             category="spot",
-            symbol="BTCUSDT",
+            symbol="BTCUSDC",
             side="Buy",
             orderType="Market",
-            qty="5"
+            qty="10"
         )
     except Exception as e:
         response = e
@@ -32,10 +32,10 @@ def sell():
     try:
         response = session.place_order(
             category="spot",
-            symbol="BTCUSDT",
+            symbol="BTCUSDC",
             side="Sell",
             orderType="Market",
-            qty="0.0001"
+            qty="0.000208"
         )
     except Exception as e:
         response = e
@@ -64,12 +64,13 @@ def get_tickers():
 old_price = float(get_tickers()['result']['list'][0]['lastPrice'])
 
 percent = 0.5
-i = 2 * 60 * 24
+i = 6 * 60 * 24
 
 while i:
-    time.sleep(30)
+    time.sleep(10)
 
     difference = old_price / 100 * percent
+
     new_price = float(get_tickers()['result']['list'][0]['lastPrice'])
     if new_price > old_price:
 
