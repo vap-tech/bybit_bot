@@ -1,15 +1,33 @@
-import time
+import redis
+from time import sleep
 from datetime import datetime
 
 from pybit.unified_trading import HTTP
+from pybit.unified_trading import WebSocket
 
 from config import API_KEY, API_SECRET
 
+ws = WebSocket(
+    testnet=False,
+    channel_type="spot",
+)
+
+r = redis.Redis(host='localhost', port=6379, decode_responses=True)
 
 session = HTTP(
     testnet=False,
     api_key=API_KEY,
     api_secret=API_SECRET,
+)
+
+
+def handle_message(message):
+    r.set(name='price', value=message['data']['lastPrice'])
+
+
+ws.ticker_stream(
+    symbol="BTCUSDC",
+    callback=handle_message
 )
 
 
@@ -43,39 +61,31 @@ def sell():
     return response
 
 
-def get_balance():
-    response = session.get_wallet_balance(
-        accountType="UNIFIED",
-        coin="RVN",
-    )
-
-    return response
+old_price = float(r.get('price'))
 
 
-def get_tickers():
-    response = session.get_tickers(
-        category="spot",
-        symbol="BTCUSDT",
-    )
-
-    return response
-
-
-old_price = float(get_tickers()['result']['list'][0]['lastPrice'])
-
-percent = 1
-
-difference = old_price / 100 * percent
+difference = 230
+stop_loss = 40
 
 while 1:
 
-    time.sleep(10)
+    sleep(1)
 
-    new_price = float(get_tickers()['result']['list'][0]['lastPrice'])
+    new_price = float(r.get('price'))
     if new_price > old_price:
 
         if new_price - old_price > difference:
-            old_price = new_price
+            stop_price = new_price
+            while 1:
+                price = float(r.get('price'))
+                if price > stop_price:
+                    stop_price = price
+                    continue
+                if price < stop_price:
+                    if stop_price - price >= stop_loss:
+                        old_price = price
+                        break
+
             print(datetime.now().strftime("%H:%M:%S"), end=' ')
             print(sell())
             continue
@@ -83,7 +93,18 @@ while 1:
     elif new_price < old_price:
 
         if old_price - new_price > difference:
-            old_price = new_price
+
+            stop_price = new_price
+            while 1:
+                price = float(r.get('price'))
+                if price < stop_price:
+                    stop_price = price
+                    continue
+                if price > stop_price:
+                    if price - stop_price >= stop_loss:
+                        old_price = price
+                        break
+
             print(datetime.now().strftime("%H:%M:%S"), end=' ')
             print(buy())
             continue
