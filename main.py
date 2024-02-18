@@ -75,8 +75,8 @@ r.set(name='diff', value=200)
 
 while True:
 
-    difference = r.get('diff')
-    old_price = r.get('old_price')
+    difference = float(r.get('diff'))
+    old_price = float(r.get('old_price'))
     new_price = float(r.get('price'))
 
     if new_price - old_price > difference:
