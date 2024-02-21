@@ -99,7 +99,7 @@ def sell(qty=0.000199):
 
 
 set_old_price(r.get('price'))
-r.set(name='diff', value=200)
+r.set(name='diff', value=500)
 
 
 while True:
