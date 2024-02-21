@@ -39,32 +39,61 @@ ws.ticker_stream(
 )
 
 
-def buy():
-    try:
-        response = session.place_order(
-            category="spot",
-            symbol="BTCUSDC",
-            side="Buy",
-            orderType="Market",
-            qty="15"
-        )
-    except Exception as e:
-        response = e
+def buy(qty=10.1):
+
+    if qty < 10.1:
+        return
+
+    count = 10
+    while True:
+
+        try:
+            response = session.place_order(
+                category="spot",
+                symbol="BTCUSDC",
+                side="Buy",
+                orderType="Market",
+                qty=qty
+            )
+            if response['retMsg'] == 'OK' or count <= 0:
+                break
+
+        except Exception as e:
+            response = e
+            sleep(1)
+            count -= 1
+            if count <= 0:
+                break
 
     return response
 
 
-def sell():
-    try:
-        response = session.place_order(
-            category="spot",
-            symbol="BTCUSDC",
-            side="Sell",
-            orderType="Market",
-            qty="0.000308"
-        )
-    except Exception as e:
-        response = e
+def sell(qty=0.000199):
+
+    if qty < 0.000199:
+        return
+
+    count = 10
+
+    while True:
+
+        try:
+            response = session.place_order(
+                category="spot",
+                symbol="BTCUSDC",
+                side="Sell",
+                orderType="Market",
+                qty=qty
+            )
+            if response['retMsg'] == 'OK' or count <= 0:
+                break
+
+        except Exception as e:
+            response = e
+            sleep(1)
+            count -= 1
+            if count <= 0:
+                break
 
     return response
 
