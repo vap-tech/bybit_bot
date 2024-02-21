@@ -159,6 +159,7 @@ while True:
         sell(qty_btc)
         print(f'qty_btc: {qty_btc}, price: {new_price}')
         set_old_price(new_price)
+        set_qty_to_trade(get_qty_to_trade())
         continue
 
     if old_price - new_price > difference:
@@ -167,6 +168,6 @@ while True:
         buy(qty_usdc)
         print(f'qty_usdc: {qty_usdc}, price: {new_price}')
         set_old_price(new_price)
+        set_qty_to_trade(get_qty_to_trade())
 
-    set_qty_to_trade(get_qty_to_trade())
     sleep(1)
