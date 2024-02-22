@@ -131,18 +131,20 @@ def get_qty_to_trade() -> dict:
 def set_qty_to_trade(qty_to_trade: dict) -> None:
 
     btc = qty_to_trade['BTC'] / 5
-    if btc < 0.000199:
-        btc = 0.000199
-    r.set('qty_btc', btc)
+    _btc = float('{:.6f}'.format(btc))
+    if _btc < 0.000199:
+        _btc = 0.000199
+    r.set('qty_btc', _btc)
 
     usdc = qty_to_trade['USDC'] / 5
-    if usdc < 10.1:
-        usdc = 10.1
-    r.set('qty_usdc', usdc)
+    _usdc = float('{:.6f}'.format(usdc))
+    if _usdc < 10.1:
+        _usdc = 10.1
+    r.set('qty_usdc', _usdc)
 
 
 set_old_price(r.get('price'))
-r.set(name='diff', value=500)
+r.set(name='diff', value=300)
 set_qty_to_trade(get_qty_to_trade())
 
 while True:
@@ -156,7 +158,7 @@ while True:
     if new_price - old_price > difference:
 
         print(datetime.now().strftime("%H:%M:%S"), 'S', end=' ')
-        sell(qty_btc)
+        print(sell(qty_btc))
         print(f'qty_btc: {qty_btc}, price: {new_price}')
         set_old_price(new_price)
         set_qty_to_trade(get_qty_to_trade())
@@ -165,7 +167,7 @@ while True:
     if old_price - new_price > difference:
 
         print(datetime.now().strftime("%H:%M:%S"), 'B', end=' ')
-        buy(qty_usdc)
+        print(buy(qty_usdc))
         print(f'qty_usdc: {qty_usdc}, price: {new_price}')
         set_old_price(new_price)
         set_qty_to_trade(get_qty_to_trade())
