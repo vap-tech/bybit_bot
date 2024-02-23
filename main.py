@@ -130,13 +130,13 @@ def get_qty_to_trade() -> dict:
 
 def set_qty_to_trade(qty_to_trade: dict) -> None:
 
-    btc = qty_to_trade['BTC'] / 5
+    btc = qty_to_trade['BTC'] / 3
     _btc = float('{:.6f}'.format(btc))
     if _btc < 0.000199:
         _btc = 0.000199
     r.set('qty_btc', _btc)
 
-    usdc = qty_to_trade['USDC'] / 5
+    usdc = qty_to_trade['USDC'] / 3
     _usdc = float('{:.6f}'.format(usdc))
     if _usdc < 10.1:
         _usdc = 10.1
