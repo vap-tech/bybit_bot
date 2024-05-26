@@ -39,7 +39,7 @@ ws.ticker_stream(
 )
 
 
-def buy(qty=19.9737):
+def buy(qty=49.7285):
 
     if qty < 10.1:
         qty = 10.1
@@ -68,7 +68,7 @@ def buy(qty=19.9737):
     return response
 
 
-def sell(qty=0.000307):
+def sell(qty=0.000720):
 
     if qty < 0.000199:
         qty = 0.000199
