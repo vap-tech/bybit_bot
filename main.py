@@ -41,6 +41,11 @@ ws.ticker_stream(
 
 def buy(qty=100.8384):
 
+    r.set(name='no_sell', value=0)
+
+    if bool(r.get(name='no_buy')):
+        return 'no_buy'
+
     if qty < 10.1:
         qty = 10.1
 
@@ -67,10 +72,18 @@ def buy(qty=100.8384):
             if count <= 0:
                 break
 
+    if 'Insufficient balance' in str(response):
+        r.set(name='no_buy', value=1)
+
     return response
 
 
 def sell(qty=0.001460):
+
+    r.set(name='no_buy', value=0)
+
+    if bool(r.get(name='no_sell')):
+        return 'no_sell'
 
     if qty < 0.000199:
         qty = 0.000199
@@ -98,10 +111,15 @@ def sell(qty=0.001460):
             if count <= 0:
                 break
 
+    if 'Insufficient balance' in str(response):
+        r.set(name='no_sell', value=1)
+
     return response
 
 
 set_old_price(r.get('price'))
+r.set(name='no_buy', value=0)
+r.set(name='no_sell', value=0)
 r.set(name='diff', value=50)
 
 
@@ -113,7 +131,7 @@ while True:
 
     if new_price - old_price > difference:
 
-        print(datetime.now().strftime("%H:%M:%S"), 'S')
+        print(datetime.now().strftime("%H:%M:%S"), 'B')
         print(buy())
         print(f'price: {new_price}')
         print()
@@ -122,7 +140,7 @@ while True:
 
     if old_price - new_price > difference:
 
-        print(datetime.now().strftime("%H:%M:%S"), 'B')
+        print(datetime.now().strftime("%H:%M:%S"), 'S')
         print(sell())
         print(f'price: {new_price}')
         print()
