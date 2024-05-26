@@ -188,7 +188,7 @@ while True:
     if old_price - new_price > difference:
 
         print(datetime.now().strftime("%H:%M:%S"), 'S')
-        print(sell(int(r.get('qty_btc'))))
+        print(sell(float(r.get('qty_btc'))))
         print(f'price: {new_price}')
         print()
         set_qty_btc()
