@@ -39,13 +39,15 @@ ws.ticker_stream(
 )
 
 
-def buy(qty=49.7285):
+def buy(qty=100.8384):
 
     if qty < 10.1:
         qty = 10.1
 
-    count = 10
-    while True:
+    response = 'error 3'
+    count = 2
+
+    while count:
 
         try:
             response = session.place_order(
@@ -55,7 +57,7 @@ def buy(qty=49.7285):
                 orderType="Market",
                 qty=qty
             )
-            if response['retMsg'] == 'OK' or count <= 0:
+            if response['retMsg'] == 'OK':
                 break
 
         except Exception as e:
@@ -68,14 +70,15 @@ def buy(qty=49.7285):
     return response
 
 
-def sell(qty=0.000720):
+def sell(qty=0.001460):
 
     if qty < 0.000199:
         qty = 0.000199
 
-    count = 10
+    response = 'error 3'
+    count = 2
 
-    while True:
+    while count:
 
         try:
             response = session.place_order(
@@ -85,7 +88,7 @@ def sell(qty=0.000720):
                 orderType="Market",
                 qty=qty
             )
-            if response['retMsg'] == 'OK' or count <= 0:
+            if response['retMsg'] == 'OK':
                 break
 
         except Exception as e:
@@ -99,7 +102,7 @@ def sell(qty=0.000720):
 
 
 set_old_price(r.get('price'))
-r.set(name='diff', value=400)
+r.set(name='diff', value=50)
 
 
 while True:
@@ -110,17 +113,19 @@ while True:
 
     if new_price - old_price > difference:
 
-        print(datetime.now().strftime("%H:%M:%S"), 'S', end=' ')
-        print(sell())
+        print(datetime.now().strftime("%H:%M:%S"), 'S')
+        print(buy())
         print(f'price: {new_price}')
+        print()
         set_old_price(new_price)
         continue
 
     if old_price - new_price > difference:
 
-        print(datetime.now().strftime("%H:%M:%S"), 'B', end=' ')
-        print(buy())
+        print(datetime.now().strftime("%H:%M:%S"), 'B')
+        print(sell())
         print(f'price: {new_price}')
+        print()
         set_old_price(new_price)
 
     sleep(1)
