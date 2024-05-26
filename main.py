@@ -43,7 +43,7 @@ def buy(qty=100.8384):
 
     r.set(name='no_sell', value=0)
 
-    if bool(r.get(name='no_buy')):
+    if r.get(name='no_buy') == '1':
         return 'no_buy'
 
     if qty < 10.1:
@@ -82,7 +82,7 @@ def sell(qty=0.001460):
 
     r.set(name='no_buy', value=0)
 
-    if bool(r.get(name='no_sell')):
+    if r.get(name='no_sell') == '1':
         return 'no_sell'
 
     if qty < 0.000199:
