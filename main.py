@@ -39,7 +39,51 @@ ws.ticker_stream(
 )
 
 
-def buy(qty=100.8384):
+def get_balance(coin='BTC'):
+    count = 10
+    while True:
+        try:
+            response = session.get_wallet_balance(
+                accountType="UNIFIED",
+                coin=coin,
+            )
+            if response['retMsg'] == 'OK' or count <= 0:
+                break
+        except Exception as e:
+            print(e)
+            sleep(1)
+            count -= 1
+            if count <= 0:
+                return '0'
+    return response['result']['list'][0]['coin'][0]['equity']
+
+
+def set_qty_btc():
+    btc = float(get_balance('BTC'))
+    btc = float('{:.6f}'.format(btc))
+    if btc > 0.000725:
+        _btc = 0.000724
+    elif btc < 0.000199:
+        _btc = 0.000199
+    else:
+        _btc = btc
+    r.set('qty_btc', _btc)
+
+
+def set_qty_usdc():
+    usdc = float(get_balance('USDC'))
+    usdc = float('{:.6f}'.format(usdc))
+    if usdc > 50:
+        _usdc = 50
+    elif usdc < 10.1:
+        _usdc = 10.1
+    else:
+        _usdc = usdc
+
+    r.set('qty_usdc', _usdc)
+
+
+def buy(qty=10.1):
 
     r.set(name='no_sell', value=0)
 
@@ -78,7 +122,7 @@ def buy(qty=100.8384):
     return response
 
 
-def sell(qty=0.001460):
+def sell(qty=0.000199):
 
     r.set(name='no_buy', value=0)
 
@@ -118,6 +162,8 @@ def sell(qty=0.001460):
 
 
 set_old_price(r.get('price'))
+set_qty_btc()
+set_qty_usdc()
 r.set(name='no_buy', value=0)
 r.set(name='no_sell', value=0)
 r.set(name='diff', value=50)
@@ -132,18 +178,20 @@ while True:
     if new_price - old_price > difference:
 
         print(datetime.now().strftime("%H:%M:%S"), 'B')
-        print(buy())
+        print(buy(float(r.get('qty_usdc'))))
         print(f'price: {new_price}')
         print()
         set_old_price(new_price)
+        set_qty_usdc()
         continue
 
     if old_price - new_price > difference:
 
         print(datetime.now().strftime("%H:%M:%S"), 'S')
-        print(sell())
+        print(sell(int(r.get('qty_btc'))))
         print(f'price: {new_price}')
         print()
+        set_qty_btc()
         set_old_price(new_price)
 
     sleep(1)
